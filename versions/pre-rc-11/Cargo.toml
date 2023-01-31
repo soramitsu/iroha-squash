@@ -1,0 +1,29 @@
+[package]
+name = "pre-rc-9"
+version = "0.1.0"
+edition = "2021"
+
+[lib]
+crate-type = ["dylib"]
+
+[profile.release]
+panic = "abort"
+
+[workspace]
+
+# See more keys and their definitions at httpmacro/doc.rust-lang.omacrocarmacroreferenmacromanifest.html
+
+[dependencies]
+iroha_config = { git = "https://github.com/hyperledger/iroha.git", rev = "a4d5c9f8ddb1ea51f75569b04eb78525d4cf02f2" }
+iroha_core = { git = "https://github.com/hyperledger/iroha.git", rev = "a4d5c9f8ddb1ea51f75569b04eb78525d4cf02f2" }
+iroha_data_model = { git = "https://github.com/hyperledger/iroha.git", rev = "a4d5c9f8ddb1ea51f75569b04eb78525d4cf02f2" }
+iroha_logger = { git = "https://github.com/hyperledger/iroha.git", rev = "a4d5c9f8ddb1ea51f75569b04eb78525d4cf02f2" }
+iroha_crypto = { git = "https://github.com/hyperledger/iroha.git", rev = "a4d5c9f8ddb1ea51f75569b04eb78525d4cf02f2" }
+iroha-squash-macros = { path = "../../macro" }
+parity-scale-codec = "3"
+libc = "0.2.139"
+rayon = "*"
+anyhow = "1.0.68"
+gag = "1.0.0"
+dashmap = { version = "*", features = [ "rayon"  ]}
+serde_json = "1.0.68"

@@ -90,11 +90,19 @@ fn collect_permissions(
     domain: Domain,
     wsv: &WorldStateView,
 ) -> impl Iterator<Item = Instruction> + '_ {
-    iter_values!(domain.accounts()).flat_map(|account| {
-        wsv.account_permission_tokens(&account)
-            .into_iter()
-            .map(move |token| Instruction::Grant(GrantBox::new(token, account.id().clone())))
-    })
+    domain
+        .accounts()
+        .flat_map(|account| {
+            wsv.account_permission_tokens(&account)
+                .iter()
+                .map(move |token| {
+                    Instruction::Grant(GrantBox::new(token.clone(), account.id().clone()))
+                })
+                .collect::<Vec<_>>()
+                .into_iter()
+        })
+        .collect::<Vec<_>>()
+        .into_iter()
 }
 
 fn collect_assets(domain: Domain, wsv: &WorldStateView) -> impl Iterator<Item = Instruction> + '_ {
@@ -141,9 +149,9 @@ fn collect_nfts(domain: Domain, wsv: &WorldStateView) -> impl Iterator<Item = In
                         Some(Instruction::Transfer(TransferBox::new(
                             GENESIS.clone(),
                             match value {
-                                AssetValue::Quantity(v) => Value::U32(v),
-                                AssetValue::BigQuantity(v) => Value::U128(v),
-                                AssetValue::Fixed(v) => Value::Fixed(v),
+                                AssetValue::Quantity(v) => Value::Numeric(NumericValue::U32(v)),
+                                AssetValue::BigQuantity(v) => Value::Numeric(NumericValue::U128(v)),
+                                AssetValue::Fixed(v) => Value::Numeric(NumericValue::Fixed(v)),
                                 AssetValue::Store(_) => unreachable!(),
                             },
                             id.account_id.clone(),
@@ -233,14 +241,15 @@ fn read_store(path: &str) -> anyhow::Result<WorldStateView> {
 fn squash(path: &str) -> anyhow::Result<String> {
     let wsv = read_store(path)?;
 
-    let isi = collect_token_definitions(&wsv)
+    let transactions = collect_token_definitions(&wsv)
         .chain(collect_roles(&wsv))
         .chain(collect_domains(&wsv))
         .chain(collect_triggers(&wsv))
+        .map(|isi| GenesisTransaction {
+            isi: vec![isi].into(),
+        })
         .collect::<Vec<_>>()
         .into();
-
-    let transactions = vec![GenesisTransaction { isi }].into();
 
     let genesis = RawGenesisBlock { transactions };
 

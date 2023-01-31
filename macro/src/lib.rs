@@ -1,14 +1,14 @@
 #[macro_export]
 macro_rules! map_values {
     ($map:expr) => {
-        $map.par_iter().map(|ref_multi| ref_multi.value().clone())
+        $map.iter().map(|ref_multi| ref_multi.value().clone())
     };
 }
 
 #[macro_export]
 macro_rules! iter_values {
     ($map:expr) => {
-        $map.cloned().collect::<Vec<_>>().into_par_iter()
+        $map.cloned().collect::<Vec<_>>().into_iter()
     };
 }
 

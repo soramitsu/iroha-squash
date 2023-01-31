@@ -33,14 +33,22 @@ impl Version {
 /// Squash iroha store
 struct Squash {
     /// path to block store
-    #[argh(option, short = 's')]
+    #[argh(option, short = 's', long = "store")]
     store: String,
+    /// iroha version
+    #[argh(option, short = 'v', long = "version")]
+    version: String,
 }
 
 fn main() -> anyhow::Result<()> {
     let args: Squash = argh::from_env();
 
-    let ver = Version::load(VERSIONS.get("pre-rc-9").unwrap()).unwrap();
+    let ver = Version::load(
+        VERSIONS
+            .get(args.version.as_str())
+            .expect("Unsupported version"),
+    )
+    .unwrap();
 
     unsafe {
         let squash_store: Symbol<unsafe extern "C" fn(*const libc::c_char) -> *mut u8> =
