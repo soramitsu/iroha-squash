@@ -13,6 +13,11 @@ use iroha_core::wsv::{World, WorldStateView};
 use iroha_data_model::account::GENESIS_ACCOUNT_NAME;
 use iroha_squash_macros::*;
 use parity_scale_codec::DecodeAll;
+use serde::Deserialize;
+
+use crate::upgrade::Upgrade;
+
+mod upgrade;
 
 prelude!();
 
@@ -271,6 +276,46 @@ pub extern "C" fn squash_store(path: *const libc::c_char) -> *mut u8 {
             CString::new("{}").unwrap().into_raw()
         }
     }
+}
+
+#[no_mangle]
+pub extern "C" fn upgrade(from: *const libc::c_char) -> *mut u8 {
+    let input = unsafe { CStr::from_ptr(from) }
+        .to_string_lossy()
+        .into_owned();
+
+    #[derive(Deserialize)]
+    struct Transaction {
+        isi: Vec<from_data_model::isi::Instruction>,
+    }
+
+    #[derive(Deserialize)]
+    struct Genesis {
+        transactions: Vec<Transaction>,
+    }
+
+    let old_transactions = serde_json::from_str::<Genesis>(&input)
+        .unwrap()
+        .transactions;
+
+    let isi = old_transactions
+        .into_iter()
+        .map(|tx| tx.isi)
+        .flatten()
+        .map(Upgrade::upgrade)
+        .collect();
+
+    let tx = GenesisTransaction { isi };
+
+    let genesis = RawGenesisBlock {
+        transactions: vec![tx].into(),
+    };
+
+    let serialized = serde_json::to_string(&genesis).unwrap();
+
+    CString::new(serialized)
+        .expect("Null bytes in serde_json output")
+        .into_raw()
 }
 
 #[no_mangle]
