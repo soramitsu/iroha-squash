@@ -278,7 +278,7 @@ fn squash(path: &str) -> anyhow::Result<String> {
 }
 
 #[no_mangle]
-pub extern "C" fn squash_store(path: *const libc::c_char) -> *mut u8 {
+pub extern "C" fn squash_store(path: *const libc::c_char) -> *mut libc::c_char {
     let path = unsafe { CStr::from_ptr(path) }
         .to_string_lossy()
         .into_owned();
@@ -295,7 +295,7 @@ pub extern "C" fn squash_store(path: *const libc::c_char) -> *mut u8 {
 }
 
 #[no_mangle]
-pub extern "C" fn upgrade(from: *const libc::c_char) -> *mut u8 {
+pub extern "C" fn upgrade(from: *const libc::c_char) -> *mut libc::c_char {
     let input = unsafe { CStr::from_ptr(from) }
         .to_string_lossy()
         .into_owned();
@@ -335,6 +335,6 @@ pub extern "C" fn upgrade(from: *const libc::c_char) -> *mut u8 {
 }
 
 #[no_mangle]
-pub unsafe extern "C" fn free_str(ptr: *mut u8) {
+pub unsafe extern "C" fn free_str(ptr: *mut libc::c_char) {
     drop(CString::from_raw(ptr));
 }

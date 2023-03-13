@@ -88,10 +88,12 @@ fn upgrade(args: Upgrade) -> anyhow::Result<()> {
     )?;
 
     unsafe {
-        let upgrade_genesis: Symbol<unsafe extern "C" fn(*const libc::c_char) -> *mut u8> =
-            ver.lib.get(b"upgrade")?;
-        let free_str: Symbol<unsafe extern "C" fn(*mut u8)> = ver.lib.get(b"free_str")?;
+        let upgrade_genesis: Symbol<
+            unsafe extern "C" fn(*const libc::c_char) -> *mut libc::c_char,
+        > = ver.lib.get(b"upgrade")?;
+        let free_str: Symbol<unsafe extern "C" fn(*mut libc::c_char)> = ver.lib.get(b"free_str")?;
         let contents = std::io::read_to_string(File::open(args.genesis).unwrap()).unwrap();
+        let contents = CString::new(contents).expect("Null byte in genesis");
         let res = upgrade_genesis(contents.as_ptr());
         println!("{}", CStr::from_ptr(res).to_str()?);
         free_str(res);
@@ -108,9 +110,9 @@ fn squash(args: Squash) -> anyhow::Result<()> {
     )?;
 
     unsafe {
-        let squash_store: Symbol<unsafe extern "C" fn(*const libc::c_char) -> *mut u8> =
+        let squash_store: Symbol<unsafe extern "C" fn(*const libc::c_char) -> *mut libc::c_char> =
             ver.lib.get(b"squash_store")?;
-        let free_str: Symbol<unsafe extern "C" fn(*mut u8)> = ver.lib.get(b"free_str")?;
+        let free_str: Symbol<unsafe extern "C" fn(*mut libc::c_char)> = ver.lib.get(b"free_str")?;
         let s = CString::new(args.store)?;
         let res = squash_store(s.as_c_str().as_ptr());
         println!("{}", CStr::from_ptr(res).to_str()?);
