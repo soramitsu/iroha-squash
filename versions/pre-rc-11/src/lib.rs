@@ -11,6 +11,7 @@ use iroha_core::kura::{BlockStoreTrait, StdFileBlockStore};
 use iroha_core::prelude::VersionedCommittedBlock;
 use iroha_core::wsv::{World, WorldStateView};
 use iroha_data_model::account::GENESIS_ACCOUNT_NAME;
+use iroha_data_model::LengthLimits;
 use iroha_squash_macros::*;
 use parity_scale_codec::DecodeAll;
 use serde::Deserialize;
@@ -214,7 +215,16 @@ fn collect_domains(wsv: &WorldStateView) -> impl Iterator<Item = Instruction> + 
 }
 
 fn read_store(path: &str) -> anyhow::Result<WorldStateView> {
-    let wsv = WorldStateView::new(World::new());
+    let mut wsv = WorldStateView::new(World::new());
+
+    wsv.config.wasm_runtime_config.fuel_limit = u64::MAX;
+    wsv.config.wasm_runtime_config.max_memory = u32::MAX;
+    wsv.config.ident_length_limits = LengthLimits::new(0, u32::MAX);
+    wsv.config.asset_definition_metadata_limits = MetadataLimits::new(u32::MAX, u32::MAX);
+    wsv.config.asset_metadata_limits = MetadataLimits::new(u32::MAX, u32::MAX);
+    wsv.config.domain_metadata_limits = MetadataLimits::new(u32::MAX, u32::MAX);
+    wsv.config.account_metadata_limits = MetadataLimits::new(u32::MAX, u32::MAX);
+
     let store = StdFileBlockStore::new(Path::new(path));
 
     let block_count = store.read_index_count()? as usize;

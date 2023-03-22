@@ -228,7 +228,16 @@ fn collect_domains(wsv: &WorldStateView) -> impl Iterator<Item = Instruction> + 
 }
 
 fn read_store(path: &str) -> anyhow::Result<WorldStateView> {
-    let wsv = WorldStateView::new(World::new(), Kura::blank_kura_for_testing());
+    let mut wsv = WorldStateView::new(World::new(), Kura::blank_kura_for_testing());
+
+    wsv.config.wasm_runtime_config.fuel_limit = u64::MAX;
+    wsv.config.wasm_runtime_config.max_memory = u32::MAX;
+    wsv.config.ident_length_limits = LengthLimits::new(0, u32::MAX);
+    wsv.config.asset_definition_metadata_limits = MetadataLimits::new(u32::MAX, u32::MAX);
+    wsv.config.asset_metadata_limits = MetadataLimits::new(u32::MAX, u32::MAX);
+    wsv.config.domain_metadata_limits = MetadataLimits::new(u32::MAX, u32::MAX);
+    wsv.config.account_metadata_limits = MetadataLimits::new(u32::MAX, u32::MAX);
+
     let store = BlockStore::new(Path::new(path));
 
     let block_count = store.read_index_count()? as usize;
