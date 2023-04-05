@@ -14,16 +14,11 @@ panic = "abort"
 # See more keys and their definitions at httpmacro/doc.rust-lang.omacrocarmacroreferenmacromanifest.html
 
 [dependencies]
-# iroha_config = { git = "https://github.com/hyperledger/iroha.git", branch = "iroha2-lts" }
-# iroha_core = { git = "https://github.com/hyperledger/iroha.git", branch = "iroha2-lts" }
-# iroha_data_model = { git = "https://github.com/hyperledger/iroha.git", branch = "iroha2-lts" }
-# iroha_logger = { git = "https://github.com/hyperledger/iroha.git", branch = "iroha2-lts" }
-# iroha_crypto = { git = "https://github.com/hyperledger/iroha.git", branch = "iroha2-lts" }
-iroha_config = { path = "../../../iroha/config" }
-iroha_core = { path = "../../../iroha/core" }
-iroha_data_model = { path = "../../../iroha/data_model" }
-iroha_logger = { path = "../../../iroha/logger" }
-iroha_crypto = { path = "../../../iroha/crypto" }
+iroha_config = { git = "https://github.com/hyperledger/iroha.git", branch = "i2-u128-fix" }
+iroha_core = { git = "https://github.com/hyperledger/iroha.git", branch = "i2-u128-fix" }
+iroha_data_model = { git = "https://github.com/hyperledger/iroha.git", branch = "i2-u128-fix" }
+iroha_logger = { git = "https://github.com/hyperledger/iroha.git", branch = "i2-u128-fix" }
+iroha_crypto = { git = "https://github.com/hyperledger/iroha.git", branch = "i2-u128-fix" }
 iroha-squash-macros = { path = "../../macro" }
 parity-scale-codec = "3.2.1"
 libc = "0.2.139"

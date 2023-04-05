@@ -1645,6 +1645,7 @@ dependencies = [
 [[package]]
 name = "iroha_actor"
 version = "2.0.0-pre-rc.9"
+source = "git+https://github.com/hyperledger/iroha.git?branch=i2-u128-fix#078b671eba4df91b33cbb9ecea32efe6dd6553c9"
 dependencies = [
  "async-trait",
  "dashmap",
@@ -1661,6 +1662,7 @@ dependencies = [
 [[package]]
 name = "iroha_actor_derive"
 version = "2.0.0-pre-rc.9"
+source = "git+https://github.com/hyperledger/iroha.git?branch=i2-u128-fix#078b671eba4df91b33cbb9ecea32efe6dd6553c9"
 dependencies = [
  "proc-macro-error",
  "proc-macro2",
@@ -1671,6 +1673,7 @@ dependencies = [
 [[package]]
 name = "iroha_config"
 version = "2.0.0-pre-rc.9"
+source = "git+https://github.com/hyperledger/iroha.git?branch=i2-u128-fix#078b671eba4df91b33cbb9ecea32efe6dd6553c9"
 dependencies = [
  "crossbeam",
  "derive_more",
@@ -1690,6 +1693,7 @@ dependencies = [
 [[package]]
 name = "iroha_config_base"
 version = "2.0.0-pre-rc.9"
+source = "git+https://github.com/hyperledger/iroha.git?branch=i2-u128-fix#078b671eba4df91b33cbb9ecea32efe6dd6553c9"
 dependencies = [
  "crossbeam",
  "iroha_config_derive",
@@ -1701,6 +1705,7 @@ dependencies = [
 [[package]]
 name = "iroha_config_derive"
 version = "2.0.0-pre-rc.9"
+source = "git+https://github.com/hyperledger/iroha.git?branch=i2-u128-fix#078b671eba4df91b33cbb9ecea32efe6dd6553c9"
 dependencies = [
  "proc-macro2",
  "quote",
@@ -1710,6 +1715,7 @@ dependencies = [
 [[package]]
 name = "iroha_core"
 version = "2.0.0-pre-rc.9"
+source = "git+https://github.com/hyperledger/iroha.git?branch=i2-u128-fix#078b671eba4df91b33cbb9ecea32efe6dd6553c9"
 dependencies = [
  "anyhow",
  "async-trait",
@@ -1744,6 +1750,7 @@ dependencies = [
 [[package]]
 name = "iroha_crypto"
 version = "2.0.0-pre-rc.9"
+source = "git+https://github.com/hyperledger/iroha.git?branch=i2-u128-fix#078b671eba4df91b33cbb9ecea32efe6dd6553c9"
 dependencies = [
  "derive_more",
  "getset",
@@ -1759,6 +1766,7 @@ dependencies = [
 [[package]]
 name = "iroha_data_model"
 version = "2.0.0-pre-rc.9"
+source = "git+https://github.com/hyperledger/iroha.git?branch=i2-u128-fix#078b671eba4df91b33cbb9ecea32efe6dd6553c9"
 dependencies = [
  "base64",
  "dashmap",
@@ -1785,6 +1793,7 @@ dependencies = [
 [[package]]
 name = "iroha_data_model_derive"
 version = "2.0.0-pre-rc.9"
+source = "git+https://github.com/hyperledger/iroha.git?branch=i2-u128-fix#078b671eba4df91b33cbb9ecea32efe6dd6553c9"
 dependencies = [
  "proc-macro-error",
  "proc-macro2",
@@ -1795,6 +1804,7 @@ dependencies = [
 [[package]]
 name = "iroha_derive"
 version = "2.0.0-pre-rc.9"
+source = "git+https://github.com/hyperledger/iroha.git?branch=i2-u128-fix#078b671eba4df91b33cbb9ecea32efe6dd6553c9"
 dependencies = [
  "proc-macro2",
  "quote",
@@ -1804,6 +1814,7 @@ dependencies = [
 [[package]]
 name = "iroha_ffi"
 version = "2.0.0-pre-rc.9"
+source = "git+https://github.com/hyperledger/iroha.git?branch=i2-u128-fix#078b671eba4df91b33cbb9ecea32efe6dd6553c9"
 dependencies = [
  "iroha_ffi_derive",
 ]
@@ -1811,6 +1822,7 @@ dependencies = [
 [[package]]
 name = "iroha_ffi_derive"
 version = "2.0.0-pre-rc.9"
+source = "git+https://github.com/hyperledger/iroha.git?branch=i2-u128-fix#078b671eba4df91b33cbb9ecea32efe6dd6553c9"
 dependencies = [
  "derive_more",
  "proc-macro-error",
@@ -1822,6 +1834,7 @@ dependencies = [
 [[package]]
 name = "iroha_futures"
 version = "2.0.0-pre-rc.9"
+source = "git+https://github.com/hyperledger/iroha.git?branch=i2-u128-fix#078b671eba4df91b33cbb9ecea32efe6dd6553c9"
 dependencies = [
  "iroha_config",
  "iroha_futures_derive",
@@ -1835,6 +1848,7 @@ dependencies = [
 [[package]]
 name = "iroha_futures_derive"
 version = "2.0.0-pre-rc.9"
+source = "git+https://github.com/hyperledger/iroha.git?branch=i2-u128-fix#078b671eba4df91b33cbb9ecea32efe6dd6553c9"
 dependencies = [
  "proc-macro-error",
  "proc-macro2",
@@ -1845,6 +1859,7 @@ dependencies = [
 [[package]]
 name = "iroha_logger"
 version = "2.0.0-pre-rc.9"
+source = "git+https://github.com/hyperledger/iroha.git?branch=i2-u128-fix#078b671eba4df91b33cbb9ecea32efe6dd6553c9"
 dependencies = [
  "color-eyre",
  "derive_more",
@@ -1862,6 +1877,7 @@ dependencies = [
 [[package]]
 name = "iroha_macro"
 version = "2.0.0-pre-rc.9"
+source = "git+https://github.com/hyperledger/iroha.git?branch=i2-u128-fix#078b671eba4df91b33cbb9ecea32efe6dd6553c9"
 dependencies = [
  "iroha_derive",
 ]
@@ -1869,6 +1885,7 @@ dependencies = [
 [[package]]
 name = "iroha_p2p"
 version = "2.0.0-pre-rc.9"
+source = "git+https://github.com/hyperledger/iroha.git?branch=i2-u128-fix#078b671eba4df91b33cbb9ecea32efe6dd6553c9"
 dependencies = [
  "aead",
  "async-stream",
@@ -1890,6 +1907,7 @@ dependencies = [
 [[package]]
 name = "iroha_primitives"
 version = "2.0.0-pre-rc.9"
+source = "git+https://github.com/hyperledger/iroha.git?branch=i2-u128-fix#078b671eba4df91b33cbb9ecea32efe6dd6553c9"
 dependencies = [
  "derive_more",
  "fixnum",
@@ -1906,6 +1924,7 @@ dependencies = [
 [[package]]
 name = "iroha_schema"
 version = "2.0.0-pre-rc.9"
+source = "git+https://github.com/hyperledger/iroha.git?branch=i2-u128-fix#078b671eba4df91b33cbb9ecea32efe6dd6553c9"
 dependencies = [
  "fixnum",
  "iroha_schema_derive",
@@ -1915,6 +1934,7 @@ dependencies = [
 [[package]]
 name = "iroha_schema_derive"
 version = "2.0.0-pre-rc.9"
+source = "git+https://github.com/hyperledger/iroha.git?branch=i2-u128-fix#078b671eba4df91b33cbb9ecea32efe6dd6553c9"
 dependencies = [
  "proc-macro2",
  "quote",
@@ -1924,6 +1944,7 @@ dependencies = [
 [[package]]
 name = "iroha_telemetry"
 version = "2.0.0-pre-rc.9"
+source = "git+https://github.com/hyperledger/iroha.git?branch=i2-u128-fix#078b671eba4df91b33cbb9ecea32efe6dd6553c9"
 dependencies = [
  "anyhow",
  "async-trait",
@@ -1948,6 +1969,7 @@ dependencies = [
 [[package]]
 name = "iroha_telemetry_derive"
 version = "2.0.0-pre-rc.9"
+source = "git+https://github.com/hyperledger/iroha.git?branch=i2-u128-fix#078b671eba4df91b33cbb9ecea32efe6dd6553c9"
 dependencies = [
  "proc-macro-error",
  "proc-macro2",
@@ -1958,6 +1980,7 @@ dependencies = [
 [[package]]
 name = "iroha_version"
 version = "2.0.0-pre-rc.9"
+source = "git+https://github.com/hyperledger/iroha.git?branch=i2-u128-fix#078b671eba4df91b33cbb9ecea32efe6dd6553c9"
 dependencies = [
  "iroha_macro",
  "iroha_schema",
@@ -1972,6 +1995,7 @@ dependencies = [
 [[package]]
 name = "iroha_version_derive"
 version = "2.0.0-pre-rc.9"
+source = "git+https://github.com/hyperledger/iroha.git?branch=i2-u128-fix#078b671eba4df91b33cbb9ecea32efe6dd6553c9"
 dependencies = [
  "proc-macro-error",
  "proc-macro2",
