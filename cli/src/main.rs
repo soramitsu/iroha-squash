@@ -1,4 +1,5 @@
 #![feature(once_cell)]
+#![feature(lazy_cell)]
 include!(concat!(env!("OUT_DIR"), "/versions.rs"));
 
 use std::{

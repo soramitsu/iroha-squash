@@ -1,4 +1,5 @@
 #![feature(once_cell)]
+#![feature(lazy_cell)]
 
 use std::cell::LazyCell;
 use std::ffi::{CStr, CString};
