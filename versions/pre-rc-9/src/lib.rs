@@ -58,33 +58,50 @@ fn collect_roles(wsv: &WorldStateView) -> impl Iterator<Item = Instruction> + '_
 }
 
 fn collect_accounts(domain: Domain) -> impl Iterator<Item = Instruction> {
-    register! {
-        iter_values!(domain.accounts()).map(|account| {
-            Account::new(account.id().clone(), account.signatories().cloned())
-                .with_metadata(account.metadata().clone())
-        })
-    }
+    iter_values!(domain.accounts()).map(|account| {
+        let register = Instruction::Register(RegisterBox::new(Account::new(
+            account.id().clone(),
+            account.signatories().cloned(),
+        )));
+        let mut instructions = vec![register];
+        instructions.extend(
+            account
+                .metadata()
+                .iter()
+                .map(|(k, v)| SetKeyValueBox::new(account.id().clone(), k.clone(), v.clone()))
+                .map(Instruction::SetKeyValue),
+        );
+        Instruction::Sequence(SequenceBox::new(instructions))
+    })
 }
 
 fn collect_asset_definitions(domain: Domain) -> impl Iterator<Item = Instruction> {
-    register! {
-      iter_values!(domain.asset_definitions())
-          .map(|entry| entry.definition().clone())
-          .map(|defn| {
-              let id = defn.id().clone();
-              let new_defn = match defn.value_type() {
-                  AssetValueType::Quantity => AssetDefinition::quantity(id),
-                  AssetValueType::BigQuantity => AssetDefinition::big_quantity(id),
-                  AssetValueType::Fixed => AssetDefinition::fixed(id),
-                  AssetValueType::Store => AssetDefinition::store(id),
-              }
-              .with_metadata(defn.metadata().clone());
-              match defn.mintable() {
-                  Mintable::Infinitely => new_defn,
-                  Mintable::Once | Mintable::Not => new_defn.mintable_once(),
-              }
-          })
-    }
+    iter_values!(domain.asset_definitions())
+        .map(|entry| entry.definition().clone())
+        .map(|defn| {
+            let id = defn.id().clone();
+            let new_defn = match defn.value_type() {
+                AssetValueType::Quantity => AssetDefinition::quantity(id),
+                AssetValueType::BigQuantity => AssetDefinition::big_quantity(id),
+                AssetValueType::Fixed => AssetDefinition::fixed(id),
+                AssetValueType::Store => AssetDefinition::store(id),
+            };
+
+            let new_defn = match defn.mintable() {
+                Mintable::Infinitely => new_defn,
+                Mintable::Once | Mintable::Not => new_defn.mintable_once(),
+            };
+
+            let register = Instruction::Register(RegisterBox::new(new_defn));
+            let mut instructions = vec![register];
+            instructions.extend(
+                defn.metadata()
+                    .iter()
+                    .map(|(k, v)| SetKeyValueBox::new(defn.id().clone(), k.clone(), v.clone()))
+                    .map(Instruction::SetKeyValue),
+            );
+            Instruction::Sequence(SequenceBox::new(instructions))
+        })
 }
 
 fn collect_permissions(
@@ -190,28 +207,28 @@ fn collect_triggers(wsv: &WorldStateView) -> impl Iterator<Item = Instruction> +
 }
 
 fn collect_domains(wsv: &WorldStateView) -> impl Iterator<Item = Instruction> + '_ {
-    register! {
-        map_values!(wsv.domains())
-        .map(|domain| Domain::new(domain.id().clone()).with_metadata(domain.metadata().clone()))
-    }
-    .chain(map_values!(wsv.domains()).flat_map(collect_accounts))
-    .chain(map_values!(wsv.domains()).flat_map(collect_asset_definitions))
-    .chain(map_values!(wsv.domains()).flat_map(|domain| collect_assets(domain, wsv)))
-    .chain(map_values!(wsv.domains()).flat_map(|domain| collect_nfts(domain, wsv)))
-    .chain(map_values!(wsv.domains()).flat_map(|domain| collect_permissions(domain, wsv)))
+    map_values!(wsv.domains())
+        .map(|domain| {
+            let register =
+                Instruction::Register(RegisterBox::new(Domain::new(domain.id().clone())));
+            let mut instructions = vec![register];
+            instructions.extend(
+                domain
+                    .metadata()
+                    .iter()
+                    .map(|(k, v)| SetKeyValueBox::new(domain.id().clone(), k.clone(), v.clone()))
+                    .map(Instruction::SetKeyValue),
+            );
+            Instruction::Sequence(SequenceBox::new(instructions))
+        })
+        .chain(map_values!(wsv.domains()).flat_map(collect_accounts))
+        .chain(map_values!(wsv.domains()).flat_map(collect_asset_definitions))
+        .chain(map_values!(wsv.domains()).flat_map(|domain| collect_assets(domain, wsv)))
+        .chain(map_values!(wsv.domains()).flat_map(|domain| collect_nfts(domain, wsv)))
+        .chain(map_values!(wsv.domains()).flat_map(|domain| collect_permissions(domain, wsv)))
 }
 
 fn read_store(path: &str) -> anyhow::Result<WorldStateView> {
-    let mut wsv = WorldStateView::new(World::new());
-
-    wsv.config.wasm_runtime_config.fuel_limit = u64::MAX;
-    wsv.config.wasm_runtime_config.max_memory = u32::MAX;
-    wsv.config.ident_length_limits = LengthLimits::new(0, u32::MAX);
-    wsv.config.asset_definition_metadata_limits = MetadataLimits::new(u32::MAX, u32::MAX);
-    wsv.config.asset_metadata_limits = MetadataLimits::new(u32::MAX, u32::MAX);
-    wsv.config.domain_metadata_limits = MetadataLimits::new(u32::MAX, u32::MAX);
-    wsv.config.account_metadata_limits = MetadataLimits::new(u32::MAX, u32::MAX);
-
     let store = StdFileBlockStore::new(Path::new(path));
 
     let block_count = store.read_index_count()? as usize;
@@ -231,6 +248,28 @@ fn read_store(path: &str) -> anyhow::Result<WorldStateView> {
         let block = VersionedCommittedBlock::decode_all(&mut block_buf.as_ref())?;
         blocks.push(block);
     }
+
+    let genesis_pubkey = blocks[0]
+        .as_v1()
+        .signatures
+        .iter()
+        .next()
+        .expect("Genesis block not signed")
+        .public_key()
+        .clone();
+
+    let mut wsv = WorldStateView::new(World::with(
+        vec![GenesisDomain::new(genesis_pubkey).into()],
+        vec![],
+    ));
+
+    wsv.config.wasm_runtime_config.fuel_limit = u64::MAX;
+    wsv.config.wasm_runtime_config.max_memory = u32::MAX;
+    wsv.config.ident_length_limits = LengthLimits::new(0, u32::MAX);
+    wsv.config.asset_definition_metadata_limits = MetadataLimits::new(u32::MAX, u32::MAX);
+    wsv.config.asset_metadata_limits = MetadataLimits::new(u32::MAX, u32::MAX);
+    wsv.config.domain_metadata_limits = MetadataLimits::new(u32::MAX, u32::MAX);
+    wsv.config.account_metadata_limits = MetadataLimits::new(u32::MAX, u32::MAX);
 
     {
         let _shutup = Gag::stdout().unwrap();
