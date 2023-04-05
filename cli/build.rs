@@ -8,6 +8,11 @@ use std::{
     process::Command,
 };
 
+#[cfg(target_os = "linux")]
+const OS_DYLIB_EXT: &'static str = "so";
+#[cfg(target_os = "macos")]
+const OS_DYLIB_EXT: &'static str = "dylib";
+
 fn main() {
     println!(
         "cargo:rerun-if-changed={}/../versions",
@@ -43,7 +48,7 @@ fn main() {
         let dylib = std::fs::read_dir(out_subdir.join("release"))
             .unwrap()
             .filter_map(Result::ok)
-            .find(|item| item.path().extension() == Some(OsStr::new("so")))
+            .find(|item| item.path().extension() == Some(OsStr::new(OS_DYLIB_EXT)))
             .expect("Failed to find .so")
             .path();
         let dylib_path = dylib.to_string_lossy();
