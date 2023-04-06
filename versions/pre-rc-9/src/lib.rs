@@ -208,7 +208,12 @@ fn collect_triggers(wsv: &WorldStateView) -> impl Iterator<Item = Instruction> +
 }
 
 fn collect_domains(wsv: &WorldStateView) -> impl Iterator<Item = Instruction> + '_ {
-    map_values!(wsv.domains())
+    let domains = || {
+        map_values!(wsv.domains())
+            .filter(|domain| domain.id().name != GENESIS_DOMAIN_NAME.parse().unwrap())
+    };
+
+    domains()
         .map(|domain| {
             let register =
                 Instruction::Register(RegisterBox::new(Domain::new(domain.id().clone())));
@@ -222,11 +227,11 @@ fn collect_domains(wsv: &WorldStateView) -> impl Iterator<Item = Instruction> + 
             );
             Instruction::Sequence(SequenceBox::new(instructions))
         })
-        .chain(map_values!(wsv.domains()).flat_map(collect_accounts))
-        .chain(map_values!(wsv.domains()).flat_map(collect_asset_definitions))
-        .chain(map_values!(wsv.domains()).flat_map(|domain| collect_assets(domain, wsv)))
-        .chain(map_values!(wsv.domains()).flat_map(|domain| collect_nfts(domain, wsv)))
-        .chain(map_values!(wsv.domains()).flat_map(|domain| collect_permissions(domain, wsv)))
+        .chain(domains().flat_map(collect_accounts))
+        .chain(domains().flat_map(collect_asset_definitions))
+        .chain(domains().flat_map(|domain| collect_assets(domain, wsv)))
+        .chain(domains().flat_map(|domain| collect_nfts(domain, wsv)))
+        .chain(domains().flat_map(|domain| collect_permissions(domain, wsv)))
 }
 
 fn read_store(path: &str) -> anyhow::Result<WorldStateView> {
