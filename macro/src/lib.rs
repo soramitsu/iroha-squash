@@ -1,3 +1,5 @@
+mod upgrade;
+
 #[macro_export]
 macro_rules! map_values {
     ($map:expr) => {

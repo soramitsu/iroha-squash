@@ -10,65 +10,13 @@ use from::Registrable as _;
 use from_data_model as from;
 use iroha_data_model as to;
 
-pub trait Upgrade: from_schema::IntoSchema {
-    type To: iroha_schema::IntoSchema;
-    fn upgrade(self) -> Self::To;
-}
+use iroha_squash_macros::{
+    declare_upgrade, forward_enum_upgrade, impl_upgrade, trivial_enum_upgrade, trivial_upgrade,
+};
 
-impl<T> Upgrade for Vec<T>
-where
-    T: Upgrade,
-{
-    type To = Vec<T::To>;
-    fn upgrade(self) -> Self::To {
-        self.into_iter().map(|v| v.upgrade()).collect()
-    }
-}
-
-impl<K, V> Upgrade for BTreeMap<K, V>
-where
-    K: Upgrade,
-    V: Upgrade,
-    K::To: Ord + std::hash::Hash,
-{
-    type To = BTreeMap<K::To, V::To>;
-    fn upgrade(self) -> Self::To {
-        self.into_iter()
-            .map(|(k, v)| (k.upgrade(), v.upgrade()))
-            .collect()
-    }
-}
-
-impl<T> Upgrade for Box<T>
-where
-    T: Upgrade,
-{
-    type To = Box<T::To>;
-    fn upgrade(self) -> Self::To {
-        Box::new((*self).upgrade())
-    }
-}
-
-impl<T> Upgrade for Option<T>
-where
-    T: Upgrade,
-{
-    type To = Option<T::To>;
-    fn upgrade(self) -> Self::To {
-        self.map(Upgrade::upgrade)
-    }
-}
-
-macro_rules! trivial_upgrade {
-    ($typ:ty) => {
-        impl Upgrade for $typ {
-            type To = $typ;
-
-            fn upgrade(self) -> Self::To {
-                self
-            }
-        }
-    };
+declare_upgrade! {
+    from_schema,
+    iroha_schema
 }
 
 trivial_upgrade!(bool);
@@ -77,68 +25,6 @@ trivial_upgrade!(u64);
 trivial_upgrade!(u128);
 trivial_upgrade!(String);
 trivial_upgrade!(Duration);
-
-macro_rules! impl_upgrade {
-    ($($seg:ident)::*; $fun:expr) => {
-        impl Upgrade for from::$($seg)::* {
-            type To = to::$($seg)::*;
-
-            fn upgrade(self) -> Self::To {
-                type From = from::$($seg)::*;
-                type To = to::$($seg)::*;
-                $fun(self)
-            }
-        }
-    };
-}
-
-macro_rules! forward_enum_upgrade {
-    ($($seg:ident)::*; $($var:ident),*) => {
-        impl Upgrade for from::$($seg)::* {
-            type To = to::$($seg)::*;
-
-            fn upgrade(self) -> Self::To {
-                match self {
-                    $(
-                      Self::$var(v) => Self::To::$var(v.upgrade())
-                    ),*
-                }
-            }
-        }
-    };
-}
-
-//macro_rules! forward_boxed_enum_upgrade {
-//    ($($seg:ident)::*; $($var:ident),*) => {
-//        impl Upgrade for from::$($seg)::* {
-//            type To = to::$($seg)::*;
-//
-//            fn upgrade(self) -> Self::To {
-//                match self {
-//                    $(
-//                      Self::$var(v) => Self::To::$var(Box::new(v.upgrade()))
-//                    ),*
-//                }
-//            }
-//        }
-//    };
-//}
-
-macro_rules! trivial_enum_upgrade {
-    ($($seg:ident)::*; $($var:ident),*) => {
-        impl Upgrade for from::$($seg)::* {
-            type To = to::$($seg)::*;
-
-            fn upgrade(self) -> Self::To {
-                match self {
-                    $(
-                      Self::$var => Self::To::$var
-                    ),*
-                }
-            }
-        }
-    };
-}
 
 macro_rules! unobtainable {
     ($($seg:ident)::*) => {

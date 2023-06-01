@@ -265,8 +265,12 @@ fn read_store(path: &str) -> anyhow::Result<WorldStateView> {
 
     {
         let _shutup = Gag::stdout().unwrap();
-        for block in blocks {
-            wsv.apply(&block);
+        for (idx, block) in blocks.into_iter().enumerate() {
+            if let Err(e) = wsv.apply(&block) {
+                drop(_shutup);
+                println!("Couldn't apply block #{idx}: {:?}", e);
+                break;
+            }
         }
     }
 
