@@ -28,7 +28,7 @@ fn main() {
 
         let version = version_dir.file_name().into_string().unwrap();
 
-        Command::new(env::var_os("CARGO").unwrap())
+        let status = Command::new(env::var_os("CARGO").unwrap())
             .args([
                 "build",
                 "--release",
@@ -38,6 +38,10 @@ fn main() {
             .current_dir(version_dir.path())
             .status()
             .expect("Version build failed");
+
+        if !status.success() {
+            panic!("Version {version} build failed");
+        }
 
         let paths = read_dir(out_subdir.clone()).unwrap();
 

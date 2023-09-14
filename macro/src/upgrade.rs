@@ -105,6 +105,39 @@ macro_rules! forward_enum_upgrade {
 }
 
 #[macro_export]
+macro_rules! forward_struct_upgrade {
+    ($($seg:ident)::*; $($field:ident),*) => {
+        forward_struct_upgrade! {
+            $($seg)::*;
+            $($seg)::*;
+            $($field),*
+        }
+    };
+    ($($from_seg:ident)::*; $($to_seg:ident)::*; $($field:ident),*) => {
+        impl Upgrade for from::$($from_seg)::* {
+            type To = to::$($to_seg)::*;
+            fn upgrade(self) -> Self::To {
+                Self::To {
+                    $(
+                      $field: self.$field.upgrade()
+                    ),*
+                }
+            }
+        }
+    };
+}
+
+#[macro_export]
+macro_rules! forward_upgrade {
+    (enum $($seg:ident)::*; $($var:ident),*) => {
+      iroha_squash_macros::forward_enum_upgrade!($($seg)::*; $($var),*);
+    };
+    (struct $($seg:ident)::*; $($field:ident),*) => {
+      iroha_squash_macros::forward_struct_upgrade!($($seg)::*; $($field),*);
+    };
+}
+
+#[macro_export]
 macro_rules! trivial_upgrade {
     ($typ:ty) => {
         impl Upgrade for $typ {
