@@ -1,8 +1,8 @@
 #[macro_export]
 macro_rules! declare_upgrade {
     ($from:ident, $to:ident) => {
-        pub trait Upgrade: $from::IntoSchema {
-            type To: $to::IntoSchema;
+        pub trait Upgrade {
+            type To;
             fn upgrade(self) -> Self::To;
         }
 

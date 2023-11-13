@@ -1,0 +1,39 @@
+[package]
+name = "pre-rc-20"
+version = "0.1.0"
+edition = "2021"
+
+[lib]
+crate-type = ["dylib"]
+
+[profile.release]
+panic = "abort"
+
+[workspace]
+
+[dependencies]
+iroha_config = { git = "https://github.com/hyperledger/iroha.git", rev = "f64586b1431c72e72593d7b32d18ed1d76ce099d" }
+iroha_core = { git = "https://github.com/hyperledger/iroha.git", rev = "f64586b1431c72e72593d7b32d18ed1d76ce099d" }
+iroha_data_model = { git = "https://github.com/hyperledger/iroha.git", rev = "f64586b1431c72e72593d7b32d18ed1d76ce099d" }
+iroha_logger = { git = "https://github.com/hyperledger/iroha.git", rev = "f64586b1431c72e72593d7b32d18ed1d76ce099d" }
+iroha-squash-macros = { path = "../../macro" }
+iroha_schema = { git = "https://github.com/hyperledger/iroha.git", rev = "f64586b1431c72e72593d7b32d18ed1d76ce099d" }
+iroha_primitives = { git = "https://github.com/hyperledger/iroha.git", rev = "f64586b1431c72e72593d7b32d18ed1d76ce099d" }
+iroha_crypto = { git = "https://github.com/hyperledger/iroha.git", rev = "f64586b1431c72e72593d7b32d18ed1d76ce099d" }
+iroha_genesis = { git = "https://github.com/hyperledger/iroha.git", rev = "f64586b1431c72e72593d7b32d18ed1d76ce099d" }
+
+from_data_model = { git = "https://github.com/hyperledger/iroha.git", rev = "55da4a1b3b20a189bc3f26121c77ea49e7b5db5e", package = "iroha_data_model", features = ["transparent_api"] }
+from_crypto = { git = "https://github.com/hyperledger/iroha.git", rev = "55da4a1b3b20a189bc3f26121c77ea49e7b5db5e", package = "iroha_crypto" }
+from_primitives = { git = "https://github.com/hyperledger/iroha.git", rev = "55da4a1b3b20a189bc3f26121c77ea49e7b5db5e", package = "iroha_primitives" }
+from_schema = { git = "https://github.com/hyperledger/iroha.git", rev = "55da4a1b3b20a189bc3f26121c77ea49e7b5db5e", package = "iroha_schema" }
+
+parity-scale-codec = "3"
+libc = "0.2.139"
+rayon = "*"
+anyhow = "1.0.68"
+gag = "1.0.0"
+dashmap = { version = "*", features = [ "rayon"  ]}
+serde_json = "1.0.68"
+serde = { version = "1.0.152", features = [ "derive" ]}
+sha256 = "1.1.2"
+base64 = "0.21.0"
