@@ -10,6 +10,7 @@ use dashmap::DashMap;
 use gag::Gag;
 use parity_scale_codec::DecodeAll;
 
+use iroha_core::block::Revalidate;
 use iroha_core::kura::{BlockStore, Kura};
 use iroha_core::smartcontracts::triggers::set::LoadedExecutable;
 use iroha_core::smartcontracts::Registrable;
@@ -360,6 +361,12 @@ fn read_store(
             for trigger in extract_triggers(instructions, &wsv)? {
                 contracts.insert(HashOf::new(&trigger), trigger);
             }
+
+            if let Err(e) = block.revalidate(&mut wsv) {
+                drop(_shutup);
+                println!("Failed to revalidate block #{idx}: {:?}", e);
+                break;
+            };
 
             if let Err(e) = wsv.apply_without_execution(&block) {
                 drop(_shutup);
