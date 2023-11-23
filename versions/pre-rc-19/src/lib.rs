@@ -361,7 +361,7 @@ fn read_store(
                 contracts.insert(HashOf::new(&trigger), trigger);
             }
 
-            if let Err(e) = wsv.apply(&block) {
+            if let Err(e) = wsv.apply_without_execution(&block) {
                 drop(_shutup);
                 println!("Couldn't apply block #{idx}: {:?}", e);
                 break;
