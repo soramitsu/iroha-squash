@@ -1,7 +1,3 @@
-#![feature(once_cell)]
-#![feature(lazy_cell)]
-
-use std::cell::LazyCell;
 use std::collections::HashMap;
 use std::ffi::{CStr, CString};
 use std::path::Path;
@@ -20,6 +16,7 @@ use iroha_data_model::transaction::{Executable, WasmSmartContract};
 use iroha_data_model::trigger::action::Action;
 use iroha_genesis::{GenesisTransaction, RawGenesisBlock, ValidatorMode, ValidatorPath};
 use iroha_squash_macros::*;
+use once_cell::sync::Lazy;
 use parity_scale_codec::DecodeAll;
 use serde::Deserialize;
 
@@ -32,7 +29,7 @@ const GENESIS_DOMAIN_NAME: &'static str = "genesis";
 
 prelude!();
 
-pub const GENESIS: LazyCell<AccountId> = LazyCell::new(|| {
+pub const GENESIS: Lazy<AccountId> = Lazy::new(|| {
     AccountId::new(
         GENESIS_ACCOUNT_NAME.parse().expect("Valid"),
         GENESIS_DOMAIN_NAME.parse().expect("Valid"),

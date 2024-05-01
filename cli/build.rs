@@ -68,9 +68,10 @@ fn main() {
         src,
         "{}",
         quote! {
-            use std::cell::LazyCell;
+            use once_cell::sync::Lazy;
             use std::collections::HashMap;
-            pub const VERSIONS: LazyCell<HashMap<&'static str, &'static [u8]>> = std::cell::LazyCell::new(|| {
+
+            pub const VERSIONS: Lazy<HashMap<&'static str, &'static [u8]>> = Lazy::new(|| {
                 let mut map = HashMap::new();
                 #(#entries);*;
                 map

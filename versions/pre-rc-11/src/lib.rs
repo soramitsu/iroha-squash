@@ -1,7 +1,3 @@
-#![feature(once_cell)]
-#![feature(lazy_cell)]
-
-use std::cell::LazyCell;
 use std::ffi::{CStr, CString};
 use std::path::Path;
 
@@ -14,6 +10,7 @@ use iroha_core::wsv::{World, WorldStateView};
 use iroha_data_model::account::GENESIS_ACCOUNT_NAME;
 use iroha_data_model::LengthLimits;
 use iroha_squash_macros::*;
+use once_cell::sync::Lazy;
 use parity_scale_codec::DecodeAll;
 use serde::Deserialize;
 
@@ -23,7 +20,7 @@ mod upgrade;
 
 prelude!();
 
-const GENESIS: LazyCell<AccountId> = LazyCell::new(|| {
+const GENESIS: Lazy<AccountId> = Lazy::new(|| {
     AccountId::new(
         GENESIS_ACCOUNT_NAME.parse().expect("Valid"),
         GENESIS_DOMAIN_NAME.parse().expect("Valid"),
