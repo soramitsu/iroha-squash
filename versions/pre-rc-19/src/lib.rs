@@ -1,15 +1,3 @@
-#![feature(lazy_cell)]
-
-use std::cell::LazyCell;
-use std::ffi::{CStr, CString};
-use std::collections::HashMap;
-use std::path::Path;
-
-use serde::Deserialize;
-use dashmap::DashMap;
-use gag::Gag;
-use parity_scale_codec::DecodeAll;
-
 use iroha_core::block::Revalidate;
 use iroha_core::kura::{BlockStore, Kura};
 use iroha_core::smartcontracts::triggers::set::LoadedExecutable;
@@ -18,12 +6,20 @@ use iroha_core::wsv::{World, WorldStateView};
 use iroha_crypto::HashOf;
 use iroha_data_model::block::VersionedCommittedBlock;
 use iroha_data_model::evaluate::ExpressionEvaluator;
+use iroha_data_model::prelude::*;
 use iroha_data_model::transaction::{Executable, WasmSmartContract};
 use iroha_data_model::trigger::action::Action;
-use iroha_data_model::prelude::*;
 use iroha_genesis::{GenesisTransactionBuilder, RawGenesisBlock, ValidatorMode, ValidatorPath};
-
 use iroha_squash_macros::*;
+use std::collections::HashMap;
+use std::ffi::{CStr, CString};
+use std::path::Path;
+
+use dashmap::DashMap;
+use gag::Gag;
+use once_cell::sync::Lazy;
+use parity_scale_codec::DecodeAll;
+use serde::Deserialize;
 
 use crate::upgrade::Upgrade;
 
@@ -34,7 +30,7 @@ const GENESIS_DOMAIN_NAME: &'static str = "genesis";
 
 prelude!();
 
-pub const GENESIS: LazyCell<AccountId> = LazyCell::new(|| {
+pub const GENESIS: Lazy<AccountId> = Lazy::new(|| {
     AccountId::new(
         GENESIS_ACCOUNT_NAME.parse().expect("Valid"),
         GENESIS_DOMAIN_NAME.parse().expect("Valid"),

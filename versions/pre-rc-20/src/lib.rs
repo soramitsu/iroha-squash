@@ -1,11 +1,9 @@
-#![feature(lazy_cell)]
-
-use std::cell::LazyCell;
 use std::ffi::{CStr, CString};
 
 use iroha_data_model::prelude::*;
 use iroha_genesis::{ExecutorMode, ExecutorPath, RawGenesisBlockBuilder};
 use iroha_squash_macros::*;
+use once_cell::sync::Lazy;
 use serde::Deserialize;
 
 use crate::upgrade::Upgrade;
@@ -17,7 +15,7 @@ const GENESIS_DOMAIN_NAME: &'static str = "genesis";
 
 prelude!();
 
-pub const GENESIS: LazyCell<AccountId> = LazyCell::new(|| {
+pub const GENESIS: Lazy<AccountId> = Lazy::new(|| {
     AccountId::new(
         GENESIS_ACCOUNT_NAME.parse().expect("Valid"),
         GENESIS_DOMAIN_NAME.parse().expect("Valid"),
