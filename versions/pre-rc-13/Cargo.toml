@@ -15,15 +15,15 @@ panic = "abort"
 iroha_config = { git = "https://github.com/hyperledger/iroha.git", rev = "c4af68c4f7959b154eb5380aa93c894e2e63fe4e" }
 iroha_core = { git = "https://github.com/hyperledger/iroha.git", rev = "c4af68c4f7959b154eb5380aa93c894e2e63fe4e" }
 iroha_data_model = { git = "https://github.com/hyperledger/iroha.git", rev = "c4af68c4f7959b154eb5380aa93c894e2e63fe4e", features = ["mutable_api"] }
-from_data_model = { git = "https://github.com/hyperledger/iroha.git", rev = "v2.0.0-pre-rc.9", package = "iroha_data_model", features = ["mutable_api"] }
+from_data_model = { git = "https://github.com/hyperledger/iroha.git", branch = "v2.0.0-pre-rc.9.1", package = "iroha_data_model", features = ["mutable_api"] }
 iroha_logger = { git = "https://github.com/hyperledger/iroha.git", rev = "c4af68c4f7959b154eb5380aa93c894e2e63fe4e" }
 iroha-squash-macros = { path = "../../macro" }
 iroha_schema = { git = "https://github.com/hyperledger/iroha.git", rev = "c4af68c4f7959b154eb5380aa93c894e2e63fe4e" }
-from_schema = { git = "https://github.com/hyperledger/iroha.git", rev = "v2.0.0-pre-rc.9", package = "iroha_schema" }
+from_schema = { git = "https://github.com/hyperledger/iroha.git", branch = "v2.0.0-pre-rc.9.1", package = "iroha_schema" }
 iroha_primitives = { git = "https://github.com/hyperledger/iroha.git", rev = "c4af68c4f7959b154eb5380aa93c894e2e63fe4e" }
-from_primitives = { git = "https://github.com/hyperledger/iroha.git", rev = "v2.0.0-pre-rc.9", package = "iroha_primitives" }
+from_primitives = { git = "https://github.com/hyperledger/iroha.git", branch = "v2.0.0-pre-rc.9.1", package = "iroha_primitives" }
 iroha_crypto = { git = "https://github.com/hyperledger/iroha.git", rev = "c4af68c4f7959b154eb5380aa93c894e2e63fe4e" }
-from_crypto = { git = "https://github.com/hyperledger/iroha.git", rev = "v2.0.0-pre-rc.9", package = "iroha_crypto" }
+from_crypto = { git = "https://github.com/hyperledger/iroha.git", branch = "v2.0.0-pre-rc.9.1", package = "iroha_crypto" }
 parity-scale-codec = "3"
 libc = "0.2.139"
 rayon = "*"
