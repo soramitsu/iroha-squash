@@ -34,6 +34,7 @@ pub extern "C" fn upgrade(from: *const libc::c_char) -> *mut libc::c_char {
         .into_owned();
 
     #[derive(Deserialize)]
+    #[serde(transparent)]
     struct Transaction {
         isi: Vec<from_data_model::isi::InstructionBox>,
     }

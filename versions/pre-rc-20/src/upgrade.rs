@@ -743,7 +743,6 @@ impl_upgrade! {
 unobtainable!(account::Account);
 unobtainable!(asset::AssetDefinition);
 unobtainable!(asset::Asset);
-unobtainable!(role::Role);
 unobtainable!(domain::Domain);
 
 fn contract_hash(
@@ -786,6 +785,11 @@ forward_upgrade! {
 forward_upgrade! {
     struct role::NewRole;
     inner
+}
+
+forward_upgrade! {
+    struct role::Role;
+    id, permissions
 }
 
 forward_upgrade! {
