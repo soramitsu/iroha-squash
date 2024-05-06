@@ -849,7 +849,13 @@ impl Upgrade for from::IdentifiableBox {
             Self::Role(v) => Self::To::Role(*v.upgrade()),
             Self::Trigger(v) => Self::To::Trigger(v.upgrade()),
             Self::Parameter(v) => Self::To::Parameter(*v.upgrade()),
-            Self::PermissionTokenDefinition(_) => unimplemented!(),
+            Self::PermissionTokenDefinition(_) => {
+                panic!("
+PermissionTokenDefinition ISI was removed in Iroha 19.
+Custom permission tokens should be defined in custom executor.
+Default permission tokens can be removed from genesis.json (default executor will define them).
+                ")
+            }
         }
     }
 }
