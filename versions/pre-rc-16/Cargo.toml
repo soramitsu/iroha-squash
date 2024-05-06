@@ -22,10 +22,10 @@ iroha_primitives = { git = "https://github.com/hyperledger/iroha.git", rev = "e4
 iroha_crypto = { git = "https://github.com/hyperledger/iroha.git", rev = "e467e1a24124ce47546f52e4ac807b2d55bb6a4d" }
 iroha_genesis = { git = "https://github.com/hyperledger/iroha.git", rev = "e467e1a24124ce47546f52e4ac807b2d55bb6a4d" }
 
-from_data_model = { git = "https://github.com/hyperledger/iroha.git", rev = "c4af68c4f7959b154eb5380aa93c894e2e63fe4e", package = "iroha_data_model", features = ["mutable_api"] }
-from_crypto = { git = "https://github.com/hyperledger/iroha.git", rev = "c4af68c4f7959b154eb5380aa93c894e2e63fe4e", package = "iroha_crypto" }
-from_primitives = { git = "https://github.com/hyperledger/iroha.git", rev = "c4af68c4f7959b154eb5380aa93c894e2e63fe4e", package = "iroha_primitives" }
-from_schema = { git = "https://github.com/hyperledger/iroha.git", rev = "c4af68c4f7959b154eb5380aa93c894e2e63fe4e", package = "iroha_schema" }
+from_data_model = { git = "https://github.com/hyperledger/iroha.git", branch = "v2.0.0-pre-rc.13.1", package = "iroha_data_model", features = ["mutable_api"] }
+from_crypto = { git = "https://github.com/hyperledger/iroha.git", branch = "v2.0.0-pre-rc.13.1", package = "iroha_crypto" }
+from_primitives = { git = "https://github.com/hyperledger/iroha.git", branch = "v2.0.0-pre-rc.13.1", package = "iroha_primitives" }
+from_schema = { git = "https://github.com/hyperledger/iroha.git", branch = "v2.0.0-pre-rc.13.1", package = "iroha_schema" }
 
 parity-scale-codec = "3"
 libc = "0.2.139"
