@@ -12,15 +12,15 @@ panic = "abort"
 [workspace]
 
 [dependencies]
-iroha_config = { git = "https://github.com/hyperledger/iroha.git", rev = "7e7c120e0dc4e5c786f0c421fc25205621cff31a" }
-iroha_core = { git = "https://github.com/hyperledger/iroha.git", rev = "7e7c120e0dc4e5c786f0c421fc25205621cff31a" }
-iroha_data_model = { git = "https://github.com/hyperledger/iroha.git", rev = "7e7c120e0dc4e5c786f0c421fc25205621cff31a" }
-iroha_logger = { git = "https://github.com/hyperledger/iroha.git", rev = "7e7c120e0dc4e5c786f0c421fc25205621cff31a" }
+iroha_config = { git = "https://github.com/hyperledger/iroha.git", rev = "v2.0.0-pre-rc.19" }
+iroha_core = { git = "https://github.com/hyperledger/iroha.git", rev = "v2.0.0-pre-rc.19" }
+iroha_data_model = { git = "https://github.com/hyperledger/iroha.git", rev = "v2.0.0-pre-rc.19" }
+iroha_logger = { git = "https://github.com/hyperledger/iroha.git", rev = "v2.0.0-pre-rc.19" }
 iroha-squash-macros = { path = "../../macro" }
-iroha_schema = { git = "https://github.com/hyperledger/iroha.git", rev = "7e7c120e0dc4e5c786f0c421fc25205621cff31a" }
-iroha_primitives = { git = "https://github.com/hyperledger/iroha.git", rev = "7e7c120e0dc4e5c786f0c421fc25205621cff31a" }
-iroha_crypto = { git = "https://github.com/hyperledger/iroha.git", rev = "7e7c120e0dc4e5c786f0c421fc25205621cff31a" }
-iroha_genesis = { git = "https://github.com/hyperledger/iroha.git", rev = "7e7c120e0dc4e5c786f0c421fc25205621cff31a" }
+iroha_schema = { git = "https://github.com/hyperledger/iroha.git", rev = "v2.0.0-pre-rc.19" }
+iroha_primitives = { git = "https://github.com/hyperledger/iroha.git", rev = "v2.0.0-pre-rc.19" }
+iroha_crypto = { git = "https://github.com/hyperledger/iroha.git", rev = "v2.0.0-pre-rc.19" }
+iroha_genesis = { git = "https://github.com/hyperledger/iroha.git", rev = "v2.0.0-pre-rc.19" }
 
 from_data_model = { git = "https://github.com/hyperledger/iroha.git", rev = "e467e1a24124ce47546f52e4ac807b2d55bb6a4d", package = "iroha_data_model", features = ["transparent_api"] }
 from_crypto = { git = "https://github.com/hyperledger/iroha.git", rev = "e467e1a24124ce47546f52e4ac807b2d55bb6a4d", package = "iroha_crypto" }
