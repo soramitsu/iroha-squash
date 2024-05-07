@@ -275,10 +275,24 @@ impl_upgrade! {
 
 impl_upgrade! {
     permission::PermissionToken;
-    |from: From| To::new(
-        from.definition_id().clone().upgrade(),
-        &serde_json::to_value(from.payload).unwrap()
-    )
+    |from: From| {
+        use parity_scale_codec::DecodeAll;
+
+        // Here we need to do upgrade from rc19 to rc20.
+        // In rc20 payload is JSON.
+        // In rc19 payload is SCALE encoded.
+        // We can't convert SCALE to JSON without knowing data type.
+        // And data type can be arbitrary.
+        // We used data type from rc16.
+        type Params = BTreeMap<to::name::Name, to::Value>;
+        let mut payload = from.payload.as_slice();
+        let params = Params::decode_all(&mut payload).unwrap();
+
+        To::new(
+            from.definition_id().clone().upgrade(),
+            &serde_json::to_value(params).unwrap(),
+        )
+    }
 }
 
 impl_upgrade! {
