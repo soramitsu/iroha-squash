@@ -158,39 +158,9 @@ impl_upgrade! {
     |from: From| To::from_str(from.as_ref()).unwrap()
 }
 
-impl_upgrade! {
-    events::notification::TriggerCompletedOutcome;
-    |from: From| {
-        match from {
-            From::Success => To::Success,
-            From::Failure(f) => To::Failure(f),
-        }
-    }
-}
-
-impl_upgrade! {
-    events::notification::TriggerCompletedEvent;
-    |from: From| {
-        To::new(
-            from.trigger_id().clone().upgrade(),
-            from.outcome().clone().upgrade(),
-        )
-    }
-}
-
-impl Upgrade for from::events::notification::NotificationEvent {
-    type To = to::events::notification::NotificationEvent;
-    fn upgrade(self) -> Self::To {
-        match self {
-            Self::TriggerCompleted(v) => Self::To::TriggerCompleted(v.upgrade()),
-            _ => unreachable!(),
-        }
-    }
-}
-
 forward_upgrade! {
     enum events::Event;
-    Pipeline, Data, Time, ExecuteTrigger, Notification
+    Pipeline, Data, Time, ExecuteTrigger
 }
 
 impl_upgrade! {
@@ -609,7 +579,6 @@ impl Upgrade for from::isi::InstructionType {
             Self::SetParameter => Self::To::SetParameter,
             Self::NewParameter => Self::To::NewParameter,
             Self::Upgrade => Self::To::Upgrade,
-            Self::Log => Self::To::Log,
             Self::Fail => Self::To::Fail,
         }
     }
@@ -886,48 +855,13 @@ trivial_enum_upgrade! {
     Committed, Validating, Rejected
 }
 
-impl_upgrade! {
-    events::notification::TriggerCompletedOutcomeType;
-    |from: From| {
-        match from {
-            From::Success => To::Success,
-            From::Failure => To::Failure,
-        }
-    }
-}
-
 forward_upgrade! {
     struct expression::ContainsAll;
     collection, elements
 }
 
-impl_upgrade! {
-    events::notification::TriggerCompletedEventFilter;
-    |from: From| {
-        To::new(
-            from.trigger_id().clone().upgrade(),
-            from.outcome_type().clone().upgrade()
-        )
-    }
-}
-
-impl_upgrade! {
-    events::notification::NotificationEventFilter;
-    |from: From| {
-        match from {
-            From::AcceptAll => To::AcceptAll,
-            From::TriggerCompleted(v) => To::TriggerCompleted(v.upgrade()),
-            _ => unreachable!()
-        }
-    }
-}
-
 forward_enum_upgrade! {
     events::FilterBox;
-    Pipeline, Data, Time, ExecuteTrigger, Notification
-}
-
-forward_enum_upgrade! {
     events::TriggeringFilterBox;
     Pipeline, Data, Time, ExecuteTrigger
 }
@@ -997,10 +931,7 @@ impl_upgrade! {
 }
 
 impl Upgrade
-    for from::trigger::action::Action<
-        from::events::TriggeringFilterBox,
-        from::transaction::Executable,
-    >
+    for from::trigger::action::Action<from::events::FilterBox, from::transaction::Executable>
 {
     type To = to::trigger::action::Action<to::events::TriggeringFilterBox>;
 
@@ -1015,37 +946,8 @@ impl Upgrade
     }
 }
 
-impl Upgrade
-    for from::trigger::action::Action<from::events::FilterBox, from::transaction::Executable>
-{
-    type To = to::trigger::action::Action<to::events::FilterBox>;
-
-    fn upgrade(self) -> Self::To {
-        Self::To::new(
-            self.executable.upgrade(),
-            self.repeats.upgrade(),
-            self.authority.upgrade(),
-            self.filter.upgrade(),
-        )
-        .with_metadata(self.metadata.upgrade())
-    }
-}
-
-impl Upgrade
-    for from::trigger::Trigger<from::events::TriggeringFilterBox, from::transaction::Executable>
-{
-    type To = to::trigger::Trigger<to::events::TriggeringFilterBox>;
-
-    fn upgrade(self) -> Self::To {
-        Self::To {
-            id: self.id.upgrade(),
-            action: self.action.upgrade(),
-        }
-    }
-}
-
 impl Upgrade for from::trigger::Trigger<from::events::FilterBox, from::transaction::Executable> {
-    type To = to::trigger::Trigger<to::events::FilterBox>;
+    type To = to::trigger::Trigger<to::events::TriggeringFilterBox>;
 
     fn upgrade(self) -> Self::To {
         Self::To {
@@ -1324,6 +1226,9 @@ impl Upgrade for from::query::QueryBox {
             Self::FindPermissionTokenSchema(v) => Self::To::FindPermissionTokenSchema(v.upgrade()),
             Self::IsAssetDefinitionOwner(_) => {
                 unimplemented!()
+            }
+            Self::DoesAccountHavePermissionToken(_) => {
+                panic!("DoesAccountHavePermissionToken was removed in rc20")
             }
         }
     }
@@ -1984,12 +1889,6 @@ forward_upgrade! {
     transaction, block_hash
 }
 
-trivial_enum_upgrade! {
-    Level;
-    TRACE, DEBUG, INFO,
-    WARN, ERROR
-}
-
 impl_upgrade! {
     Value;
     |from: From| {
@@ -2016,7 +1915,6 @@ impl_upgrade! {
             From::Validator(v) => To::Executor(v.upgrade()),
             From::Block(v) => To::Block(v.upgrade().into()),
             From::BlockHeader(v) => To::BlockHeader(v.upgrade()),
-            From::LogLevel(v) => To::LogLevel(v.upgrade()),
             From::PermissionTokenSchema(v) => To::PermissionTokenSchema(v.upgrade()),
             From::TransactionQueryOutput(v) => To::TransactionQueryOutput(v.upgrade())
         }
@@ -2073,17 +1971,10 @@ forward_struct_upgrade! {
     condition, then, otherwise
 }
 
-forward_struct_upgrade! {
-  isi::LogBox;
-  isi::LogExpr;
-  level,msg
-}
-
 impl Upgrade for from::isi::InstructionBox {
     type To = to::isi::InstructionExpr;
     fn upgrade(self) -> Self::To {
         match self {
-            Self::Log(v) => Self::To::Log(v.upgrade()),
             Self::Register(v) => Self::To::Register(v.upgrade()),
             Self::Unregister(v) => Self::To::Unregister(v.upgrade()),
             Self::Mint(v) => Self::To::Mint(v.upgrade()),
