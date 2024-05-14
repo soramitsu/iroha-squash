@@ -15,6 +15,7 @@ use iroha_squash_macros::{
     declare_upgrade, forward_enum_upgrade, forward_struct_upgrade, forward_upgrade, impl_upgrade,
     trivial_enum_upgrade, trivial_upgrade,
 };
+use crate::permissions::DEFAULT_PERMISSION_TOKENS_MAP;
 
 declare_upgrade!(from_schema, iroha_schema);
 
@@ -661,6 +662,15 @@ impl_upgrade! {
 impl_upgrade! {
     permission::PermissionTokenId;
     |from: From| {
+        let id = from.name.to_string();
+        let id_to = DEFAULT_PERMISSION_TOKENS_MAP
+            .iter()
+            .find(|(id_from, _id_to)| id_from == &id)
+            .map(|(_id_from, id_to)| id_to);
+        if let Some(id_to) = id_to {
+            return to::name::Name::from_str(id_to).unwrap();
+        }
+
         from.name.upgrade()
     }
 }
@@ -853,11 +863,13 @@ impl Upgrade for from::IdentifiableBox {
             Self::Role(v) => Self::To::Role(*v.upgrade()),
             Self::Trigger(v) => Self::To::Trigger(v.upgrade()),
             Self::Parameter(v) => Self::To::Parameter(*v.upgrade()),
-            Self::PermissionTokenDefinition(_) => {
+            Self::PermissionTokenDefinition(token) => {
+                let token_id = token.id.name.to_string();
                 panic!("
 PermissionTokenDefinition ISI was removed in Iroha 19.
 Custom permission tokens should be defined in custom executor.
-Default permission tokens can be removed from genesis.json (default executor will define them).
+You have permission token: `{token_id}`.
+(It is either custom or was default in previous iroha version but was deleted in rc19)
                 ")
             }
         }

@@ -1,0 +1,50 @@
+pub const DEFAULT_PERMISSION_TOKENS_MAP: &[(&str, &str)] = &[
+    // Renamed from snake_case to PascalCase (rc16 -> rc19)
+    ("can_unregister_any_peer", "CanUnregisterAnyPeer"),
+    ("can_unregister_domain", "CanUnregisterDomain"),
+    ("can_set_key_value_in_domain", "CanSetKeyValueInDomain"),
+    ("can_remove_key_value_in_domain", "CanRemoveKeyValueInDomain"),
+    ("can_unregister_account", "CanUnregisterAccount"),
+    ("can_mint_user_public_keys", "CanMintUserPublicKeys"),
+    ("can_burn_user_public_keys", "CanBurnUserPublicKeys"),
+    ("can_mint_user_signature_check_conditions", "CanMintUserSignatureCheckConditions"),
+    ("can_set_key_value_in_user_account", "CanSetKeyValueInUserAccount"),
+    ("can_remove_key_value_in_user_account", "CanRemoveKeyValueInUserAccount"),
+    ("can_unregister_asset_definition", "CanUnregisterAssetDefinition"),
+    ("can_set_key_value_in_asset_definition", "CanSetKeyValueInAssetDefinition"),
+    ("can_remove_key_value_in_asset_definition", "CanRemoveKeyValueInAssetDefinition"),
+    ("can_register_assets_with_definition", "CanRegisterAssetsWithDefinition"),
+    ("can_unregister_assets_with_definition", "CanUnregisterAssetsWithDefinition"),
+    ("can_unregister_user_asset", "CanUnregisterUserAsset"),
+    ("can_burn_assets_with_definition", "CanBurnAssetsWithDefinition"),
+    ("can_burn_user_asset", "CanBurnUserAsset"),
+    ("can_mint_assets_with_definition", "CanMintAssetsWithDefinition"),
+    ("can_transfer_assets_with_definition", "CanTransferAssetsWithDefinition"),
+    ("can_transfer_user_asset", "CanTransferUserAsset"),
+    ("can_set_key_value_in_user_asset", "CanSetKeyValueInUserAsset"),
+    ("can_remove_key_value_in_user_asset", "CanRemoveKeyValueInUserAsset"),
+    ("can_grant_permission_to_create_parameters", "CanGrantPermissionToCreateParameters"),
+    ("can_revoke_permission_to_create_parameters", "CanRevokePermissionToCreateParameters"),
+    ("can_create_parameters", "CanCreateParameters"),
+    ("can_grant_permission_to_set_parameters", "CanGrantPermissionToSetParameters"),
+    ("can_revoke_permission_to_set_parameters", "CanRevokePermissionToSetParameters"),
+    ("can_set_parameters", "CanSetParameters"),
+    ("can_unregister_any_role", "CanUnregisterAnyRole"),
+    ("can_execute_user_trigger", "CanExecuteUserTrigger"),
+    ("can_unregister_user_trigger", "CanUnregisterUserTrigger"),
+    ("can_mint_user_trigger", "CanMintUserTrigger"),
+    ("can_upgrade_validator", "CanUpgradeValidator"),
+
+    // Note that ideally these should be handled when upgrading rc13 -> rc16
+    // (E.g. "can_unregister_asset_with_definition" -> "can_unregister_assets_with_definition")
+    // But it is unlikely that anyone will use rc16, so we handle it here (rc16 -> rc19)
+    ("can_unregister_asset_with_definition", "CanUnregisterAssetsWithDefinition"),
+    ("can_burn_asset_with_definition", "CanBurnAssetsWithDefinition"),
+    ("can_remove_key_value_in_user_assets", "CanRemoveKeyValueInUserAsset"),
+    ("can_set_key_value_in_user_assets", "CanSetKeyValueInUserAsset"),
+    ("can_set_key_value_in_user_metadata", "CanSetKeyValueInUserAccount"),
+    ("can_mint_user_asset_definitions", "CanMintAssetsWithDefinition"),
+
+    // Removed
+    // ("can_register_domains", ""),
+];

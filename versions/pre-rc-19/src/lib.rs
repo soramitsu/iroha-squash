@@ -20,9 +20,11 @@ use gag::Gag;
 use once_cell::sync::Lazy;
 use parity_scale_codec::DecodeAll;
 use serde::Deserialize;
+use crate::permissions::DEFAULT_PERMISSION_TOKENS_MAP;
 
 use crate::upgrade::Upgrade;
 
+mod permissions;
 mod upgrade;
 
 const GENESIS_ACCOUNT_NAME: &'static str = "genesis";
@@ -437,6 +439,7 @@ pub extern "C" fn upgrade(from: *const libc::c_char) -> *mut libc::c_char {
         .into_iter()
         .map(|tx| tx.isi)
         .flatten()
+        .filter(|isi| !is_register_default_permission_token(isi))
         .map(Upgrade::upgrade)
         .collect();
 
@@ -452,6 +455,17 @@ pub extern "C" fn upgrade(from: *const libc::c_char) -> *mut libc::c_char {
     CString::new(serialized)
         .expect("Null bytes in serde_json output")
         .into_raw()
+}
+
+fn is_register_default_permission_token(isi: &from_data_model::isi::InstructionBox) -> bool {
+    use from_data_model::prelude::*;
+    let InstructionBox::Register(register) = isi else { return false; };
+    let expression = register.object.expression.as_ref();
+    let Expression::Raw(value) = expression else { return false; };
+    let Value::Identifiable(identifiable) = value else { return false; };
+    let IdentifiableBox::PermissionTokenDefinition(token) = identifiable else { return false; };
+    let token_id = token.id.name.to_string();
+    DEFAULT_PERMISSION_TOKENS_MAP.iter().any(|(id_from, _id_to)| &token_id == id_from)
 }
 
 #[no_mangle]
