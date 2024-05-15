@@ -284,15 +284,55 @@ impl_upgrade! {
         // We can't convert SCALE to JSON without knowing data type.
         // And data type can be arbitrary.
         // We used data type from rc16.
-        type Params = BTreeMap<to::name::Name, to::Value>;
+        type Params = BTreeMap<from::name::Name, from::Value>;
         let mut payload = from.payload.as_slice();
         let params = Params::decode_all(&mut payload).unwrap();
+
+        let params = params
+            .into_iter()
+            .map(|(name, value)| (name.upgrade(), value.upgrade()))
+            .map(|(name, value)| (name, permission_token_param_value_to_json(value)))
+            .collect::<BTreeMap<_, _>>();
 
         To::new(
             from.definition_id().clone().upgrade(),
             &serde_json::to_value(params).unwrap(),
         )
     }
+}
+
+// In rc16 permissions payload is strongly typed `Vec<(Name, Value)>`
+// In rc19/rc20 payload can be arbitrary.
+// In rc19 payload format for default permissions was changed.
+// E.g. for `CanBurnAssetsWithDefinition` previously it was:
+// ```json
+// "NewRole": {
+//   "id": "ADMIN_ROLE",
+//   "permissions": [
+//     {
+//       "definition_id": "can_burn_asset_with_definition",
+//       "params": {
+//         "asset_definition_id": {
+//           "AssetDefinitionId": "credit#admin"
+//         }
+//       }
+//     }
+//   ]
+// }
+// ```
+//
+// And `params` should be changed to:
+// ...
+//       "params": {
+//         "asset_definition_id": "credit#admin"
+//       }
+// ...
+fn permission_token_param_value_to_json(value: to::Value) -> serde_json::Value {
+    if let to::Value::Id(value) = &value {
+        return serde_json::Value::String(value.to_string());
+    }
+
+    serde_json::to_value(value).unwrap()
 }
 
 impl_upgrade! {
