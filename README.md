@@ -3,7 +3,13 @@
 For usage: `cargo run help`
 
 Known limitations:
-- Supported versions for squashing: pre-rc-9, pre-rc-11, pre-rc-13, pre-rc-16, pre-rc-19, pre-rc-20
+- Supported versions for squashing:
+  - [pre-rc-9](https://github.com/hyperledger/iroha/tree/v2.0.0-pre-rc.9.1)
+  - [pre-rc-11](https://github.com/hyperledger/iroha/tree/a4d5c9f8ddb1ea51f75569b04eb78525d4cf02f2)
+  - [pre-rc-13](https://github.com/hyperledger/iroha/tree/v2.0.0-pre-rc.13.1)
+  - [pre-rc-16](https://github.com/hyperledger/iroha/tree/e467e1a24124ce47546f52e4ac807b2d55bb6a4d)
+  - [pre-rc-19](https://github.com/hyperledger/iroha/tree/v2.0.0-pre-rc.19)
+  - [pre-rc-20](https://github.com/hyperledger/iroha/tree/v2.0.0-pre-rc.20.1)
 - Supported upgrade paths:
   - pre-rc-9 -> pre-rc-11
   - pre-rc-9 -> pre-rc-13

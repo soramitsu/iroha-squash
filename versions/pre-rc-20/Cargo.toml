@@ -12,15 +12,15 @@ panic = "abort"
 [workspace]
 
 [dependencies]
-iroha_config = { git = "https://github.com/hyperledger/iroha.git", rev = "v2.0.0-pre-rc.20" }
-iroha_core = { git = "https://github.com/hyperledger/iroha.git", rev = "v2.0.0-pre-rc.20" }
-iroha_data_model = { git = "https://github.com/hyperledger/iroha.git", rev = "v2.0.0-pre-rc.20" }
-iroha_logger = { git = "https://github.com/hyperledger/iroha.git", rev = "v2.0.0-pre-rc.20" }
+iroha_config = { git = "https://github.com/hyperledger/iroha.git", rev = "v2.0.0-pre-rc.20.1" }
+iroha_core = { git = "https://github.com/hyperledger/iroha.git", rev = "v2.0.0-pre-rc.20.1" }
+iroha_data_model = { git = "https://github.com/hyperledger/iroha.git", rev = "v2.0.0-pre-rc.20.1" }
+iroha_logger = { git = "https://github.com/hyperledger/iroha.git", rev = "v2.0.0-pre-rc.20.1" }
 iroha-squash-macros = { path = "../../macro" }
-iroha_schema = { git = "https://github.com/hyperledger/iroha.git", rev = "v2.0.0-pre-rc.20" }
-iroha_primitives = { git = "https://github.com/hyperledger/iroha.git", rev = "v2.0.0-pre-rc.20" }
-iroha_crypto = { git = "https://github.com/hyperledger/iroha.git", rev = "v2.0.0-pre-rc.20" }
-iroha_genesis = { git = "https://github.com/hyperledger/iroha.git", rev = "v2.0.0-pre-rc.20" }
+iroha_schema = { git = "https://github.com/hyperledger/iroha.git", rev = "v2.0.0-pre-rc.20.1" }
+iroha_primitives = { git = "https://github.com/hyperledger/iroha.git", rev = "v2.0.0-pre-rc.20.1" }
+iroha_crypto = { git = "https://github.com/hyperledger/iroha.git", rev = "v2.0.0-pre-rc.20.1" }
+iroha_genesis = { git = "https://github.com/hyperledger/iroha.git", rev = "v2.0.0-pre-rc.20.1" }
 
 from_data_model = { git = "https://github.com/hyperledger/iroha.git", rev = "v2.0.0-pre-rc.19", package = "iroha_data_model", features = ["transparent_api"] }
 from_crypto = { git = "https://github.com/hyperledger/iroha.git", rev = "v2.0.0-pre-rc.19", package = "iroha_crypto" }
