@@ -1,5 +1,5 @@
 use iroha_core::block::Revalidate;
-use iroha_core::kura::{BlockStore, Kura};
+use iroha_core::kura::{BlockIndex, BlockStore, Kura};
 use iroha_core::smartcontracts::triggers::set::LoadedExecutable;
 use iroha_core::smartcontracts::Registrable;
 use iroha_core::wsv::{World, WorldStateView};
@@ -324,7 +324,7 @@ fn read_store(
     let block_count = store.read_index_count()? as usize;
 
     let indices = {
-        let mut indices = Vec::with_capacity(block_count);
+        let mut indices = vec![BlockIndex::default(); block_count];
         store.read_block_indices(0, &mut indices)?;
         indices
     };

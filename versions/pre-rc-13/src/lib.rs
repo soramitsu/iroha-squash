@@ -4,7 +4,7 @@ use std::path::Path;
 use dashmap::DashMap;
 use gag::Gag;
 use iroha_core::genesis::{GenesisTransaction, RawGenesisBlock};
-use iroha_core::kura::{BlockStore, Kura};
+use iroha_core::kura::{BlockIndex, BlockStore, Kura};
 use iroha_core::prelude::VersionedCommittedBlock;
 use iroha_core::wsv::{World, WorldStateView};
 use iroha_data_model::account::GENESIS_ACCOUNT_NAME;
@@ -245,7 +245,7 @@ fn read_store(path: &str) -> anyhow::Result<WorldStateView> {
     let block_count = store.read_index_count()? as usize;
 
     let indices = {
-        let mut indices = Vec::with_capacity(block_count);
+        let mut indices = vec![BlockIndex::default(); block_count];
         store.read_block_indices(0, &mut indices)?;
         indices
     };
