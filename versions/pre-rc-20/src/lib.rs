@@ -81,36 +81,27 @@ fn collect_accounts(domain: Domain) -> impl Iterator<Item = InstructionExpr> {
         .map(InstructionExpr::Register)
 }
 
-fn collect_asset_definitions(
-    domain: Domain,
-    wsv: &WorldStateView,
-) -> impl Iterator<Item = InstructionExpr> + '_ {
+fn collect_asset_definitions(domain: Domain) -> impl Iterator<Item = InstructionExpr> {
     iter_values!(domain.asset_definitions()).map(|defn| {
-        let id = defn.id().clone();
-        let new_defn = match defn.value_type() {
-            AssetValueType::Quantity => AssetDefinition::quantity(id),
-            AssetValueType::BigQuantity => AssetDefinition::big_quantity(id),
-            AssetValueType::Fixed => AssetDefinition::fixed(id),
-            AssetValueType::Store => AssetDefinition::store(id),
-        }
-        .with_metadata(defn.metadata().clone());
-        let new_defn = match defn.mintable {
-            Mintable::Infinitely => new_defn,
-            Mintable::Once | Mintable::Not => new_defn.mintable_once(),
+        let new_defn = NewAssetDefinition {
+            id: defn.id.clone(),
+            value_type: defn.value_type,
+            mintable: defn.mintable,
+            logo: defn.logo.clone(),
+            metadata: defn.metadata.clone(),
         };
-        InstructionExpr::Pair(Box::new(PairExpr::new(
-            InstructionExpr::Register(RegisterExpr::new(new_defn.clone())),
-            InstructionExpr::Transfer(TransferExpr::new(
-                IdBox::AccountId(GENESIS.clone()),
-                new_defn.clone().build(&GENESIS),
-                IdBox::AccountId(
-                    wsv.asset_definition(new_defn.id())
-                        .unwrap()
-                        .owned_by()
-                        .clone(),
-                ),
-            )),
-        )))
+
+        let register_expr = InstructionExpr::Register(RegisterExpr::new(new_defn));
+        let transfer_expr = InstructionExpr::Transfer(TransferExpr::new(
+            IdBox::AccountId(GENESIS.clone()),
+            defn.id.clone(),
+            IdBox::AccountId(defn.owned_by.clone()),
+        ));
+        if defn.owned_by == *GENESIS_ACCOUNT_ID {
+            register_expr
+        } else {
+            PairExpr::new(register_expr, transfer_expr).into()
+        }
     })
 }
 
@@ -264,7 +255,7 @@ fn collect_domains(wsv: &WorldStateView) -> impl Iterator<Item = InstructionExpr
         .map(RegisterExpr::new)
         .map(InstructionExpr::Register)
         .chain(domains().flat_map(|(_, domain)| collect_accounts(domain)))
-        .chain(domains().flat_map(|(_, domain)| collect_asset_definitions(domain, wsv)))
+        .chain(domains().flat_map(|(_, domain)| collect_asset_definitions(domain)))
         .chain(domains().flat_map(|(_, domain)| collect_assets(domain, wsv)))
         .chain(domains().flat_map(|(_, domain)| collect_nfts(domain, wsv)))
         .chain(domains().flat_map(|(_, domain)| collect_permissions(domain, wsv)))
